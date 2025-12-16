@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Portofolio — Nur Hadi</title>
+<style>
+  :root{
+    --bg:#f4f8ff;
+    --card:#ffffff;
+    --muted:#666;
+    --accent:#00c2ff;
+    --accent-2:#6a5cff;
+    --glass: rgba(255,255,255,0.6);
+    --text:#111;
+    --radius:14px;
+  }
+  [data-theme="dark"]{
+    --bg:#091027;
+    --card:#0e1830;
+    --muted:#9fb0d2;
+    --accent:#4fd1ff;
+    --accent-2:#8b6bff;
+    --glass: rgba(255,255,255,0.04);
+    --text:#e6f0ff;
+  }
+
+  *{box-sizing:border-box}
+  html,body{height:100%;margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial;color:var(--text);background:var(--bg);-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1100px;margin:0 auto;padding:20px}
+
+  /* header */
+  header.hero{
+    border-radius:var(--radius);
+    overflow:hidden;
+    position:relative;
+    margin:20px 0;
+    display:flex;
+    gap:24px;
+    align-items:center;
+    padding:28px;
+    background:linear-gradient(135deg,var(--accent),var(--accent-2));
+    color:white;
+  }
+  /* animated background shapes */
+  .hero::before, .hero::after{
+    content:"";
+    position:absolute; inset: -30% -20% auto auto; width:600px;height:600px;border-radius:50%; opacity:.15;
+    transform:translateX(-10%) translateY(-10%) rotate(15deg);
+    background:radial-gradient(circle at 30% 30%, rgba(255,255,255,0.15), transparent 30%);
+    pointer-events:none;
+  }
+  .hero::after{inset:auto auto -10% -10%; opacity:.12; transform:translateX(10%) translateY(10%) rotate(-10deg)}
+
+  .hero .left{display:flex;gap:18px;align-items:center;z-index:1}
+  .profile{
+    width:120px;height:120px;border-radius:50%;border:5px solid rgba(255,255,255,0.18);overflow:hidden;flex-shrink:0;background:#fff;
+  }
+  .profile img{width:100%;height:100%;object-fit:cover;display:block}
+  .hero h1{margin:0;font-size:clamp(20px,3.2vw,30px)}
+  .hero p{margin:.25rem 0 0;color:rgba(255,255,255,0.92)}
+
+  .hero .actions{margin-left:auto;display:flex;gap:10px;align-items:center;z-index:1}
+  .btn{background:rgba(255,255,255,0.14);color:white;padding:10px 14px;border-radius:10px;border:0;cursor:pointer;font-weight:600}
+  .btn.ghost{background:transparent;border:1px solid rgba(255,255,255,0.12)}
+  .theme-toggle{display:flex;align-items:center;gap:8px;padding:8px;border-radius:12px;background:rgba(255,255,255,0.06);cursor:pointer}
+
+  /* layout columns */
+  .columns{display:grid;grid-template-columns:1fr 380px;gap:28px;margin-top:18px}
+  @media(max-width:980px){ .columns{grid-template-columns:1fr} .hero{flex-direction:column;align-items:flex-start} .hero .actions{margin-left:0} }
+
+  /* cards */
+  .card{background:var(--card);border-radius:12px;padding:18px;box-shadow:0 6px 22px rgba(11,22,40,0.06);}
+
+  /* About / badges */
+  .badges{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px}
+  .badge{background:var(--glass);padding:8px 10px;border-radius:999px;font-weight:600;color:var(--muted);font-size:13px;border:1px solid rgba(0,0,0,0.03)}
+
+  /* skill bars */
+  .skill{margin:12px 0}
+  .skill .row{display:flex;justify-content:space-between;align-items:center;font-weight:600}
+  .bar{height:12px;background:linear-gradient(90deg, rgba(0,0,0,0.06), rgba(0,0,0,0.03));border-radius:10px;margin-top:8px;overflow:hidden}
+  .bar > i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),var(--accent-2));width:0%;transition:width 900ms ease}
+
+  /* projects grid */
+  .projects-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
+  .project-card{padding:12px;border-radius:12px;border:1px solid rgba(0,0,0,0.04);background:linear-gradient(180deg,rgba(255,255,255,1),var(--card));cursor:pointer;transition:transform .25s,box-shadow .25s}
+  .project-card:hover{transform:translateY(-6px);box-shadow:0 18px 40px rgba(11,22,40,0.08)}
+  .project-card h4{margin:6px 0 4px}
+  .project-card p{margin:0;color:var(--muted);font-size:14px}
+
+  /* modal */
+  .modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;padding:20px;background:rgba(5,10,20,0.6);z-index:1000}
+  .modal.open{display:flex}
+  .modal .box{width:min(900px,96%);background:var(--card);border-radius:12px;overflow:hidden}
+  .modal .box header{display:flex;justify-content:space-between;padding:12px 16px;border-bottom:1px solid rgba(0,0,0,0.05)}
+  .modal iframe{width:100%;height:480px;border:0;display:block}
+
+  /* timeline */
+  .timeline{position:relative;padding-left:18px;border-left:2px dashed rgba(0,0,0,0.06)}
+  .timeline .item{position:relative;padding:12px 0}
+  .timeline .item::before{content:"";position:absolute;left:-11px;top:12px;width:18px;height:18px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 4px rgba(0,0,0,0.03)}
+
+  /* certificates */
+  .cert-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px}
+  .cert{height:110px;border-radius:10px;overflow:hidden;display:flex;align-items:center;justify-content:center;border:1px solid rgba(0,0,0,0.06)}
+  .cert img{max-width:100%;max-height:100%;object-fit:contain}
+
+  /* gallery */
+  .gallery{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px}
+  .gallery img{width:100%;height:90px;object-fit:cover;border-radius:8px;cursor:pointer;transition:transform .18s}
+  .gallery img:hover{transform:scale(1.04)}
+
+  /* footer */
+  footer{margin:28px 0;text-align:center;color:var(--muted)}
+
+  /* floating whatsapp */
+  .wh-btn{position:fixed;right:18px;bottom:18px;background:#25d366;color:white;border-radius:999px;padding:14px 16px;font-weight:700;box-shadow:0 10px 30px rgba(0,0,0,0.2);z-index:120}
+  .wh-btn small{display:block;font-size:11px;opacity:.92}
+
+  /* small utilities */
+  .muted{color:var(--muted)}
+  .flex{display:flex;gap:12px;align-items:center}
+  .space-between{display:flex;justify-content:space-between;align-items:center}
+  .center{text-align:center}
+
+  /* animate on scroll classes */
+  .reveal{opacity:0;transform:translateY(20px);transition:all .7s cubic-bezier(.2,.9,.3,1)}
+  .reveal.show{opacity:1;transform:none}
+</style>
+</head>
+<body>
+
+<div class="wrap" id="page">
+
+  <!-- header -->
+  <header class="hero card" role="banner">
+    <div class="left">
+      <div class="profile">
+        <!-- GANTI LINK FOTO DENGAN FOTO PROFILMU -->
+        <img src="https://raw.githubusercontent.com/Adi1912-cell/Website_portfolio/main/img/foto1.jpg" alt="Nur Hadi">
+      </div>
+      <div>
+        <h1>Nur Hadi</h1>
+        <p>Siswa SMK N 1 Kutasari — Teknik Komputer &amp; Jaringan (TKJ)</p>
+        <div class="badges" aria-hidden>
+          <div class="badge">TKJ</div>
+          <div class="badge">Mikrotik</div>
+          <div class="badge">Cisco</div>
+          <div class="badge">Cloud Computinng</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button class="btn" id="downloadCv"></button>
+      <button class="btn ghost" id="contactMe">Contact</button>
+      <div class="theme-toggle" id="themeToggle" title="Toggle dark / light">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" stroke="white" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+        <small style="font-weight:700;color:white">Mode</small>
+      </div>
+    </div>
+  </header>
+
+  <div class="columns">
+
+    <!-- main column -->
+    <main>
+      <!-- about -->
+      <section class="card reveal" id="about">
+        <h3>About</h3>
+        <p class="muted">Saya aktif mengembangkan skill di jaringan komputer, konfigurasi router &amp; switch, Cloud Computing, instalasi sistem operasi, dan pengelolaan perangkat jaringan. Saya juga membuat proyek sederhana yang berhubungan dengan akses dan manajemen jaringan.</p>
+
+        <h4 style="margin-top:14px">Skill</h4>
+        <div class="skill">
+          <div class="row"><span>Mikrotik / RouterOS</span><span>80%</span></div>
+          <div class="bar"><i data-width="80%"></i></div>
+        </div>
+        <div class="skill">
+          <div class="row"><span>Cisco / Networking</span><span>75%</span></div>
+          <div class="bar"><i data-width="75%"></i></div>
+        </div>
+        <div class="skill">
+          <div class="row"><span>Cloud Computing</span><span>80%</span></div>
+          <div class="bar"><i data-width="80%"></i></div>
+        </div>
+      </section>
+
+      <!-- projects -->
+      <section class="card reveal" id="projects" style="margin-top:18px">
+        <div class="space-between">
+          <h3>Proyek &amp; Tugas</h3>
+          <small class="muted">Klik untuk melihat</small>
+        </div>
+
+        <div class="projects-grid" style="margin-top:12px">
+          <!-- Project 1 (video modal) -->
+          <article class="project-card" data-video="https://www.youtube.com/embed/8-q-n30_Xpo">
+    <h4>MikroTik</h4>
+    <p>Membuat Akses Internet di Jam Kerja... Video menunjukkan proses dan hasilnya.</p>
+    <a href="https://www.youtube.com/embed/8-q-n30_Xpo" target="_blank" style="color: #ff4500; font-size: 12px;">[ Klik di sini jika video tidak muncul ]</a>
+</article>
+<article class="project-card" data-video="https://youtu.be/x3-At8bnm90?si=U_CitGOTxNe8CCED">
+    <h4>Cloud Computing</h4>
+    <p>Membuat Web Server Aplikasi CRUD dengan RDS (Database MySQL)</p>
+    <a href="https://youtu.be/x3-At8bnm90?si=U_CitGOTxNe8CCED" target="_blank" style="color: #ff4500; font-size: 12px;">[ Klik di sini jika video tidak muncul ]</a>
+</article>
+          
+          <article class="project-card" data-video="https://www.youtube.com/embed/N-wcEI34RE0">
+    <h4>MikroTik</h4>
+    <p>Pisah Trafik Lan</p>
+    <a href="https://www.youtube.com/embed/N-wcEI34RE0" target="_blank" style="color: #ff4500; font-size: 12px;">[ Klik di sini jika video tidak muncul ]</a>
+</article>
+        </div>
+      </section>
+
+      <!-- gallery -->
+      <section class="card reveal" id="gallery" style="margin-top:18px">
+        <h3>Gallery</h3>
+        <p class="muted">Proyek, hasil lab, dan sertifikat.</p>
+        <div class="gallery" style="margin-top:10px">
+          <!-- ganti src dengan gambar di repo / imgur / raw github -->
+          <img src="https://via.placeholder.com/400x250?text=Project+1" alt="project1">
+          <img src="https://via.placeholder.com/400x250?text=Project+2" alt="project2">
+          <img src="https://via.placeholder.com/400x250?text=Lab" alt="lab">
+          <img src="https://via.placeholder.com/400x250?text=Sertifikat" alt="sertifikat">
+        </div>
+      </section>
+
+      <!-- certificates -->
+      <section class="card reveal" id="certs" style="margin-top:18px">
+        <h3>Sertifikat</h3>
+        <div class="cert-grid" style="margin-top:10px">
+          <div class="cert"><img src="https://via.placeholder.com/300x180?text=Sertifikat+1" alt="sert1"></div>
+          <div class="cert"><img src="https://via.placeholder.com/300x180?text=Sertifikat+2" alt="sert2"></div>
+          <div class="cert"><img src="https://via.placeholder.com/300x180?text=Sertifikat+3" alt="sert3"></div>
+        </div>
+      </section>
+    </main>
+
+    <!-- right column -->
+    <aside>
+      <div class="card reveal">
+        <h4>Kontak Singkat</h4>
+        <p class="muted">Email: adigaming1912@email.com<br>Telp:+6281225053611</p>
+    
+      </div>
+
+      <div class="card reveal" style="margin-top:16px">
+        <h4>Skill Badges</h4>
+        <div class="badges" style="margin-top:8px">
+          <div class="badge">Mikrotik</div>
+          <div class="badge">Cisco</div>
+          <div class="badge">Linux</div>
+          <div class="badge">Cloud Computing</div>
+        </div>
+      </div>
+
+      <div class="card reveal" style="margin-top:16px">
+        <h4>Quick Links</h4>
+        <ul style="padding-left:16px;margin:8px 0;color:var(--muted)">
+          <li><a href="#projects">Proyek</a></li>
+          <li><a href="#certs">Sertifikat</a></li>
+          <li><a href="#contact">Kontak</a></li>
+        </ul>
+      </div>
+    </aside>
+
+  </div>
+
+  <footer>
+    &copy; <span id="year"></span> Nur Hadi
+  </footer>
+</div>
+
+<!-- modal untuk video -->
+<div id="modal" class="modal" aria-hidden="true">
+  <div class="box">
+    <header>
+      <strong id="modalTitle">Video</strong>
+      <button id="closeModal" class="btn" style="background:transparent;color:var(--muted);border:0">Tutup ✕</button>
+    </header>
+    <iframe id="modalIframe" src="" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+  </div>
+</div>
+
+<!-- whatsapp button -->
+<a class="wh-btn" id="whBtn" href="https://wa.me/6281225053611?text=Halo%20Nur%20Hadi%20saya%20ingin%20bekerja%20sama" target="_blank" rel="noopener">
+  💬 <small>Hubungi</small>
+</a>
+
+<script>
+  // set year
+  document.getElementById('year').textContent = new Date().getFullYear();
+
+  // theme toggle (dark/light saved in localStorage)
+  const root = document.documentElement;
+  const themeToggle = document.getElementById('themeToggle');
+  function setTheme(t){
+    if(t === 'dark') root.setAttribute('data-theme','dark');
+    else root.removeAttribute('data-theme');
+    localStorage.setItem('theme', t);
+  }
+  const saved = localStorage.getItem('theme') || (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark':'light');
+  setTheme(saved);
+  themeToggle.addEventListener('click', ()=> setTheme(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'));
+
+  // reveal on scroll (intersection observer)
+  const observer = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting) e.target.classList.add('show');
+    });
+  },{threshold:0.12});
+  document.querySelectorAll('.reveal').forEach(el=>observer.observe(el));
+
+  // animate skill bars when visible
+  document.querySelectorAll('.bar i').forEach(i=>{
+    const w = i.getAttribute('data-width') || '60%';
+    const ob = new IntersectionObserver((entries)=>{
+      entries.forEach(en=>{
+        if(en.isIntersecting){ i.style.width = w; ob.unobserve(en.target); }
+      });
+    },{threshold:0.35});
+    ob.observe(i);
+  });
+
+  // project modal open (video)
+  const modal = document.getElementById('modal');
+  const iframe = document.getElementById('modalIframe');
+  const title = document.getElementById('modalTitle');
+  document.querySelectorAll('.project-card').forEach(card=>{
+    card.addEventListener('click', ()=>{
+      const src = card.getAttribute('data-video');
+      title.textContent = card.querySelector('h4').textContent || 'Video';
+      iframe.src = src + '?autoplay=1';
+      modal.classList.add('open');
+      modal.setAttribute('aria-hidden','false');
+    });
+  });
+  document.getElementById('closeModal').addEventListener('click', closeModal);
+  modal.addEventListener('click', (e)=>{ if(e.target===modal) closeModal(); });
+  function closeModal(){ modal.classList.remove('open'); iframe.src=''; modal.setAttribute('aria-hidden','true'); }
+
+  // download CV & contact actions (replace file link as needed)
+  document.getElementById('downloadCv').addEventListener('click', ()=>{
+    // ganti link berikut jika kamu sudah upload cv.pdf ke repo/raw
+    const url = 'https://raw.githubusercontent.com/Adi1912-cell/Website_portfolio/main/assets/CV_NurHadi.pdf';
+    window.open(url, '_blank');
+  });
+  document.getElementById('contactMe').addEventListener('click', ()=>{ window.location.href='#contact'; });
+
+  // small accessibility: keyboard ESC to close modal
+  document.addEventListener('keydown', (e)=>{ if(e.key==='Escape') closeModal(); });
+
+  // if you want to lazy-check embed permission: optional
+  // fetch('https://www.youtube.com/embed/8-q-n30_Xpo').then(...)
+
+</script>
+
+<!-- contact section placed at bottom for link anchoring -->
+<section id="contact" style="max-width:1100px;margin:18px auto 80px;padding:0 20px;">
+  <div class="card center">
+    <h3>Kontak</h3>
+    <p class="muted">Email: adigaming1912@email.com | Telp: +6281225053611</p>
+  </div>
+</section>
+
+</body>
+</html>
